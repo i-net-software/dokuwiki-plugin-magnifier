@@ -1,0 +1,57 @@
+div.magnifierWrapper,
+svg.magnifierWrapper
+{
+	position: absolute;
+	width: 320px;
+	height: 270px;
+	
+	margin-left: -20px;
+	margin-top: 20px;
+	
+	pointer-events: none;
+
+	/* IE dos not support pointer events*/
+	margin-left: 10px\9;
+	margin-top: 0px\9;
+}
+
+noindex:-o-prefocus, div.magnifierWrapper,
+svg.magnifierWrapper
+{
+		margin-left: 10px;
+		margin-top: 0px;
+}
+
+div.magnifierWrapper:after,
+svg.magnifierWrapper:after
+{
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+
+	background: url(images/magnifier.png) no-repeat left top;
+	
+	-webkit-transform-origin: 18px 248px;
+	-moz-transform-origin: 18px 248px;
+	-o-transform-origin: 18px 248px;
+	-ms-transform-origin: 18px 248px;	
+}
+
+div.magnifierWrapper div.magnifierContent,
+svg.magnifierWrapper rect.magnifierContent
+{
+	position: absolute;
+	width: 252px;
+	height: 252px;
+	overflow: hidden;
+	
+	top: 9px;
+	left: 58px;
+	
+	border-radius: 126px;
+	background-repeat: no-repeat;
+	background-color: #666;
+}
