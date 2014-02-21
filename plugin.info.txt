@@ -5,4 +5,4 @@ email  tools@inetsoftware.de
 date   2012-08-30
 name   magnifier
 
-url    http://www.inetsoftware.de/other-products/dokuwiki-plugins/popupviewer
+url    https://github.com/i-net-software/dokuwiki-plugin-magnifier
