@@ -1,7 +1,7 @@
 Image Magnifier
 ===============
 
-This is a []DokuWiki plugin](https://www.dokuwiki.org/plugin:magnifier) that renders a loupe over a smaller sized image. Inside the loupe will be the full image that can be revealed by hovering over the parts.
+This is a [DokuWiki plugin](https://www.dokuwiki.org/plugin:magnifier) that renders a loupe over a smaller sized image. Inside the loupe will be the full image that can be revealed by hovering over the parts.
 
 _Note:_ The image of the loupe cannot be changed at the moment since the script requires its current dimensions and positions.
 
