@@ -1,5 +1,6 @@
 # General Plugin Info do not edit
 
+base   magnifier
 author i-net software
 email  tools@inetsoftware.de
 date   2012-08-30
