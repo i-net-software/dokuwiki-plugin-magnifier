@@ -11,77 +11,99 @@
 	    }
 	})(document.createElement("style"));
 	
-	var magnifier = function(magnifierNode) {
+	/**
+	 * normalizeEvent
+	 *
+	 * Firefox does not implement offsetX, OffsetY, so we have to detect for this an
+	 * manually calculate it ourselves using the pageX, pageY less the event
+	 * target's left offset and right offset
+	 *
+	 * If using a browser that supports offsetX, OffsetY, just return the event,
+	 * don't need to do anything
+	 */
+	var normalizeEvent = function(event) {
+	  if(!event.offsetX) {
+	    event.offsetX = (event.pageX - $(event.target).offset().left);
+	    event.offsetY = (event.pageY - $(event.target).offset().top);
+	  }
+	  return event;
+	};
 	
-		var self = this;
-		self.rootNode = magnifierNode;
-		self.magnifierImage = new Image();
-		self.magnifierContent = null;
-		self.magnifierImage.src = self.rootNode.attr('magnifierImage');
-		self.magnifierRoot = null;
-		self.currentAngleSheet = null;
+	// private
+	var magnifier = function(){
+	};
+	
+	(function(_){
 		
-		self.init = function(){
-			self.rootNode.bind('mouseenter', self.mouseover);
-		}
-		
-		self.mouseover = function(event)
-		{
-			if ( self.magnifierRoot == null ) {
+		var rootNode = null;
+		var magnifierImage = null;
+		var magnifierContent = null;
+		var magnifierRoot = null;
+		var currentAngleSheet = null;
 
-				self.magnifierRoot = $('<svg></svg>').addClass('magnifierWrapper').attr('pointer-events', 'none');
-				self.magnifierContent = $('<rect></rect>').addClass('magnifierContent').css('backgroundImage', 'url(' + self.rootNode.attr('magnifierImage') + ')');
-				self.magnifierRoot.append(self.magnifierContent);
+		_.init = function(magnifierNode) {
+		
+			rootNode = magnifierNode;
+			magnifierImage = new Image();
+			magnifierImage.src = rootNode.attr('magnifierImage');
+
+			// register other handlers
+			rootNode.mousemove(_.mousemove);
+			rootNode.mouseout(_.mouseout);
+			rootNode.mouseover(_.mouseover);
+			return _;
+		};
+		
+		_.mouseover = function(event)
+		{
+			if ( magnifierRoot == null ) {
+
+				magnifierRoot = $('<svg></svg>').addClass('magnifierWrapper').attr('pointer-events', 'none');
+				magnifierContent = $('<rect></rect>').addClass('magnifierContent').css('backgroundImage', 'url(' + rootNode.attr('magnifierImage') + ')');
+				magnifierRoot.append(magnifierContent);
 	
-				// register other handlers
-				self.rootNode.bind('mousemove', self.mousemove);
-				self.rootNode.bind('mouseout', self.mouseout);
-				
 				// macht im Opera Problem ...
-				$("body").append(self.magnifierRoot);
+				$("body").append(magnifierRoot);
 			}
 	
-			self.mousemove(event);			
+			_.mousemove(event);			
 		};
 		
-		self.mousemove = function(event)
+		_.mousemove = function(event)
 		{
-			self.setPosition(event.pageX,event.pageY, event.offsetX, event.offsetY);
+			normalizeEvent(event);
+			_.setPosition(event.pageX,event.pageY, event.offsetX, event.offsetY);
 		};
 
-		self.mouseout = function(event)
+		_.mouseout = function(event)
 		{
-			var rootOffset = self.rootNode.offset();
+			normalizeEvent(event);
+			var rootOffset = rootNode.offset();
 			// Check Position over Element before removing!
 			if ( rootOffset.left > event.offsetX || 
-				 (rootOffset.left + self.rootNode.width()) < event.offsetX ||
+				 (rootOffset.left + rootNode.width()) < event.offsetX ||
 				 rootOffset.top < event.offsetY || 
 				 (rootOffset.top + rootOffset.height) > event.offsetY )
 				 {
-					// Clean up
-					self.rootNode.unbind('mousemove', self.mousemove);
-					self.rootNode.unbind('mouseout', self.mouseout);
-					
-					if ( self.magnifierRoot ) {
-						self.magnifierRoot.remove();
-						self.magnifierRoot = null;
+					if ( magnifierRoot ) {
+						magnifierRoot.remove();
+						magnifierRoot = null;
 					}
 				 }
-
 		};
 		
-		self.setPosition = function(x, y, contentX, contentY)
+		_.setPosition = function(x, y, contentX, contentY)
 		{
-			if ( !self.magnifierImage || !contentX || !contentY ) {
+			if ( !magnifierImage || !contentX || !contentY ) {
 				return;
 			}
 			
 			// Background position
-			var posX = -(contentX / self.rootNode.width() * self.magnifierImage.width - self.magnifierContent.width() / 2);
-			var posY = -(contentY / self.rootNode.height() * self.magnifierImage.height - self.magnifierContent.height() / 2);
+			var posX = -(contentX / rootNode.width() * magnifierImage.width - magnifierContent.width() / 2);
+			var posY = -(contentY / rootNode.height() * magnifierImage.height - magnifierContent.height() / 2);
 			
 			// Radial position
-			var position = (1 / self.rootNode.width() * (self.rootNode.width() - contentX));
+			var position = (1 / rootNode.width() * (rootNode.width() - contentX));
 			var arc = -(110 * position + 35) * Math.PI / 180;
 
 			var left0 = 202;
@@ -91,35 +113,42 @@
 			var top = left0 * Math.sin(arc) + top0 * Math.cos(arc) + 113;
 			var angle = 'rotate(' + (position * -110) + 'deg)';
 
-			if ( self.currentAngleSheet != null ) {
-				$(self.currentAngleSheet).remove();
+			if ( currentAngleSheet != null ) {
+				$(currentAngleSheet).remove();
 			}
 
-			self.currentAngleSheet = addCSSRule("div.magnifierWrapper:after,svg.magnifierWrapper:after", {
+			currentAngleSheet = addCSSRule("div.magnifierWrapper:after,svg.magnifierWrapper:after", {
 																'-webkit-transform': angle,
 																'-moz-transform': angle,
 																'-o-transform': angle,
 																'-ms-transform': angle
 									});
 							
-			self.magnifierContent.css({
+			magnifierContent.css({
+										'background-position': posX + "px " + posY + "px",
 										'backgroundPositionX': posX,
 										'backgroundPositionY': posY,
 										'margin-left' : left,
 										'margin-top': top
 									});
 									
-			if ( !self.magnifierRoot || !x || !y ) {
+			if ( !magnifierRoot || !x || !y ) {
 				return;
 			}
 			
-			self.magnifierRoot.offset({ left:x - 18, top: y - self.magnifierRoot.height() });
+			magnifierRoot.offset({ left:x - 18, top: y - magnifierRoot.height() });
 		};
-	};
-
+	
+	})(magnifier.prototype);
+	
+	// public
+	$.magnify = function(magnifierNode) {
+		return (new magnifier()).init(magnifierNode);
+	}
+	
 	$(function(){
 		$('img.magnifierImage').each(function(index, item){
-			(new magnifier($(item))).init();
+			$.magnify($(item));
 		});
 	});
 
