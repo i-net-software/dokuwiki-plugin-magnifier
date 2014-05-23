@@ -3,7 +3,7 @@
 base   magnifier
 author i-net software
 email  tools@inetsoftware.de
-date   2012-08-30
+date   2014-02-10
 name   magnifier
 
 url    https://github.com/i-net-software/dokuwiki-plugin-magnifier
