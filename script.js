@@ -4,11 +4,11 @@
 	    var sheet = document.head.appendChild(style).sheet;
 	    return function(selector, css){
 	        var propText = Object.keys(css).map(function(p){
-	            return p+":"+css[p]
+	            return p+":"+css[p];
 	        }).join(";");
 	        sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
 	        return sheet;
-	    }
+	    };
 	})(document.createElement("style"));
 	
 	/**
@@ -144,7 +144,7 @@
 	// public
 	$.magnify = function(magnifierNode) {
 		return (new magnifier()).init(magnifierNode);
-	}
+	};
 	
 	$(function(){
 		$('img.magnifierImage').each(function(index, item){
