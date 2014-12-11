@@ -26,62 +26,63 @@
 	    event.offsetX = (event.pageX - $(event.target).offset().left);
 	    event.offsetY = (event.pageY - $(event.target).offset().top);
 	  }
-	  return event;
+	  return event.data;
 	};
 	
 	// private
 	var magnifier = function(){
+
+		this.rootNode = null;
+		this.magnifierImage = null;
+		this.magnifierContent = null;
 	};
 	
 	(function(_){
 		
-		var rootNode = null;
-		var magnifierImage = null;
-		var magnifierContent = null;
 		var magnifierRoot = null;
 		var currentAngleSheet = null;
 
 		_.init = function(magnifierNode) {
 		
-			rootNode = magnifierNode;
-			magnifierImage = new Image();
-			magnifierImage.src = rootNode.attr('magnifierImage');
+			this.rootNode = magnifierNode;
+			this.magnifierImage = new Image();
+			this.magnifierImage.src = this.rootNode.attr('magnifierImage');
 
 			// register other handlers
-			rootNode.mousemove(_.mousemove);
-			rootNode.mouseout(_.mouseout);
-			rootNode.mouseover(_.mouseover);
-			return _;
+			this.rootNode.mousemove(this, _.mousemove);
+			this.rootNode.mouseout(this, _.mouseout);
+			this.rootNode.mouseover(this, _.mouseover);
 		};
 		
 		_.mouseover = function(event)
 		{
+    		var $$ = normalizeEvent(event);
 			if ( magnifierRoot == null ) {
 
 				magnifierRoot = $('<svg></svg>').addClass('magnifierWrapper').attr('pointer-events', 'none');
-				magnifierContent = $('<rect></rect>').addClass('magnifierContent').css('backgroundImage', 'url(' + rootNode.attr('magnifierImage') + ')');
-				magnifierRoot.append(magnifierContent);
+				$$.magnifierContent = $('<rect></rect>').addClass('magnifierContent').css('backgroundImage', 'url(' + $$.rootNode.attr('magnifierImage') + ')');
+				magnifierRoot.append($$.magnifierContent);
 	
 				// macht im Opera Problem ...
 				$("body").append(magnifierRoot);
 			}
 	
-			_.mousemove(event);			
+			_.mousemove(event);	
 		};
 		
 		_.mousemove = function(event)
 		{
-			normalizeEvent(event);
-			_.setPosition(event.pageX,event.pageY, event.offsetX, event.offsetY);
+    		var $$ = normalizeEvent(event);
+			_.setPosition(event.pageX,event.pageY, event.offsetX, event.offsetY, $$);
 		};
 
 		_.mouseout = function(event)
 		{
-			normalizeEvent(event);
-			var rootOffset = rootNode.offset();
+    		var $$ = normalizeEvent(event);
+			var rootOffset = $$.rootNode.offset();
 			// Check Position over Element before removing!
 			if ( rootOffset.left > event.offsetX || 
-				 (rootOffset.left + rootNode.width()) < event.offsetX ||
+				 (rootOffset.left + $$.rootNode.width()) < event.offsetX ||
 				 rootOffset.top < event.offsetY || 
 				 (rootOffset.top + rootOffset.height) > event.offsetY )
 				 {
@@ -92,18 +93,18 @@
 				 }
 		};
 		
-		_.setPosition = function(x, y, contentX, contentY)
+		_.setPosition = function(x, y, contentX, contentY, $$)
 		{
-			if ( !magnifierImage || !contentX || !contentY ) {
+			if ( !$$ || !$$.magnifierImage || !contentX || !contentY || !$$.magnifierContent ) {
 				return;
 			}
 			
 			// Background position
-			var posX = -(contentX / rootNode.width() * magnifierImage.width - magnifierContent.width() / 2);
-			var posY = -(contentY / rootNode.height() * magnifierImage.height - magnifierContent.height() / 2);
+			var posX = -(contentX / $$.rootNode.width() * $$.magnifierImage.width - $$.magnifierContent.width() / 2);
+			var posY = -(contentY / $$.rootNode.height() * $$.magnifierImage.height - $$.magnifierContent.height() / 2);
 			
 			// Radial position
-			var position = (1 / rootNode.width() * (rootNode.width() - contentX));
+			var position = (1 / $$.rootNode.width() * ($$.rootNode.width() - contentX));
 			var arc = -(110 * position + 35) * Math.PI / 180;
 
 			var left0 = 202;
@@ -124,7 +125,7 @@
 																'-ms-transform': angle
 									});
 							
-			magnifierContent.css({
+			$$.magnifierContent.css({
 										'background-position': posX + "px " + posY + "px",
 										'backgroundPositionX': posX,
 										'backgroundPositionY': posY,
