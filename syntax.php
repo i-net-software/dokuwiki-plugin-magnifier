@@ -15,6 +15,8 @@ require_once(DOKU_PLUGIN.'syntax.php');
 
 class syntax_plugin_magnifier extends DokuWiki_Syntax_Plugin {
 
+    private $headers = array();
+
     function getInfo(){
         return array_merge(confToHash(dirname(__FILE__).'/plugin.info.txt'), array());
     }
@@ -69,7 +71,7 @@ class syntax_plugin_magnifier extends DokuWiki_Syntax_Plugin {
                 // is Media
 
                 $p1 = Doku_Handler_Parse_Media($orig);
-                $scID = sectionID(noNs($id), $renderer->headers);
+                $scID = sectionID(noNs($id), $this->headers);
 
                 $p = array();
                 $p['alt'] = $id;
