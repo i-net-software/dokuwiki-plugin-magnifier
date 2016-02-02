@@ -30,7 +30,7 @@ class syntax_plugin_magnifier extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addSpecialPattern('{{magnifier>[^}]+}}', $mode, 'plugin_magnifier');
     }
 
-    function handle($match, $state, $pos, &$handler) {
+    function handle($match, $state, $pos, Doku_Handler $handler) {
 
 	    // {{magnifier>:image:test.png?widthxheight}}
 
@@ -51,7 +51,7 @@ class syntax_plugin_magnifier extends DokuWiki_Syntax_Plugin {
         return array(trim($id), $w, $h, $orig);
     }
 
-    function render($mode, &$renderer, $data) {
+    function render($mode, Doku_Renderer $renderer, $data) {
         global $ID, $conf, $JSINFO;
 
         list($id, $w, $h, $orig) = $data;
