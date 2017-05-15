@@ -32,7 +32,7 @@ class syntax_plugin_magnifier extends DokuWiki_Syntax_Plugin {
 
     function handle($match, $state, $pos, &$handler) {
 
-	    // {{magnifier>:image:test.png?widthxheight}}
+        // {{magnifier>:image:test.png?widthxheight}}
 
         $orig = substr($match, 12, -2);
         
@@ -57,7 +57,7 @@ class syntax_plugin_magnifier extends DokuWiki_Syntax_Plugin {
         list($id, $w, $h, $orig) = $data;
         if ( empty($id) ) { $exists = false; } else
         {
-        	$id = cleanID($id);
+            $id = cleanID($id);
             $page   = resolve_id(getNS($ID),$id);
             $file   = mediaFN($page);
             $exists = @file_exists($file) && @is_file($file);
