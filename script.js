@@ -2,6 +2,7 @@
 
     var addCSSRule = (function(style){
         var head = document.head || jQuery("head")[0] || document.documentElement;
+        if ( JSINFO['nonce'] ) { style.setAttribute('nonce', JSINFO['nonce']); }
         var sheet = head.appendChild(style).sheet;
         return function(selector, css){
             var propText = Object.keys(css).map(function(p){
