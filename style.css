@@ -9,17 +9,13 @@ svg.magnifierWrapper
     margin-top: 20px;
     
     pointer-events: none;
-
-    /* IE dos not support pointer events*/
-    margin-left: 10px\9;
-    margin-top: 0px\9;
 }
 
 noindex:-o-prefocus, div.magnifierWrapper,
 svg.magnifierWrapper
 {
-        margin-left: 10px;
-        margin-top: 0px;
+    margin-left: 10px;
+    margin-top: 0px;
 }
 
 div.magnifierWrapper:after,
@@ -38,6 +34,7 @@ svg.magnifierWrapper:after
     -moz-transform-origin: 18px 248px;
     -o-transform-origin: 18px 248px;
     -ms-transform-origin: 18px 248px;    
+    transform-origin: 18px 248px;    
 }
 
 div.magnifierWrapper div.magnifierContent,
@@ -54,4 +51,9 @@ svg.magnifierWrapper rect.magnifierContent
     border-radius: 126px;
     background-repeat: no-repeat;
     background-color: #666;
+}
+
+svg.magnifierWrapper {
+    /* The calculations are a bit off so it needs this */
+    overflow: visible !important;
 }
