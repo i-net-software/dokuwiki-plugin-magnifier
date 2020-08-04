@@ -49,12 +49,16 @@ class syntax_plugin_magnifier extends DokuWiki_Syntax_Plugin {
         }
         */
         return array(trim($id), $w, $h, $orig);
+
+        $p1 = Doku_Handler_Parse_Media($orig);
+        return array(trim($id), $w, $h, $orig, $p1);
     }
 
     function render($mode, Doku_Renderer $renderer, $data) {
         global $ID, $conf, $JSINFO;
 
         list($id, $w, $h, $orig) = $data;
+        list($id, $w, $h, $orig, $p1) = $data;
         if ( empty($id) ) { $exists = false; } else
         {
             $id = cleanID($id);
