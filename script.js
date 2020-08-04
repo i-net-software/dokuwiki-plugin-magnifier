@@ -1,7 +1,7 @@
 (function ($){
 
     var addCSSRule = (function(style){
-        var head = document.head || jQuery("head")[0] || document.documentElement;
+        var head = document.head || $("head")[0] || document.documentElement;
         if ( JSINFO['nonce'] ) { style.setAttribute('nonce', JSINFO['nonce']); }
         var sheet = head.appendChild(style).sheet;
         return function(selector, css){
@@ -124,7 +124,8 @@
                                                                 '-webkit-transform': angle,
                                                                 '-moz-transform': angle,
                                                                 '-o-transform': angle,
-                                                                '-ms-transform': angle
+                                                                '-ms-transform': angle,
+                                                                'transform': angle,
                                     });
                             
             $$.magnifierContent.css({
@@ -139,7 +140,8 @@
                 return;
             }
             
-            magnifierRoot.offset({ left:x - 18, top: y - magnifierRoot.height() });
+            // Magic values for offset of loupe inner circle
+            magnifierRoot.offset({ left:x - 18, top: y - magnifierRoot.height() + 20 });
         };
     
     })(magnifier.prototype);
