@@ -38,17 +38,6 @@ class syntax_plugin_magnifier extends DokuWiki_Syntax_Plugin {
         
         list($id, $param) = explode('?', $orig, 2); // find ID + Params
         list($w, $h) = explode('x', $param, 2); // find Size
-        /*
-        if ( preg_match("/{{[^}]+}}/", $name)) {
-         
-        $displayImage = substr($name, 2, -2); // strip markup
-        $name = array();
-        list($name['id'], $name['name']) = explode('|', $displayImage, 2); // find ID/Params + Name Extension
-        list($name['id'], $name['param']) = explode('?', $name['id'], 2); // find ID + Params
-        list($name['w'], $name['h']) = explode('x', $name['param'], 2); // find Size
-        }
-        */
-        return array(trim($id), $w, $h, $orig);
 
         $p1 = Doku_Handler_Parse_Media($orig);
         return array(trim($id), $w, $h, $orig, $p1);
@@ -57,7 +46,6 @@ class syntax_plugin_magnifier extends DokuWiki_Syntax_Plugin {
     function render($mode, Doku_Renderer $renderer, $data) {
         global $ID, $conf, $JSINFO;
 
-        list($id, $w, $h, $orig) = $data;
         list($id, $w, $h, $orig, $p1) = $data;
         if ( empty($id) ) { $exists = false; } else
         {
@@ -74,7 +62,6 @@ class syntax_plugin_magnifier extends DokuWiki_Syntax_Plugin {
             if ( $exists ) {
                 // is Media
 
-                $p1 = Doku_Handler_Parse_Media($orig);
                 $scID = sectionID(noNs($id), $this->headers);
 
                 $p = array();
